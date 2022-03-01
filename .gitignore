@@ -4,7 +4,7 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 raw_data/
-notebooks/
+
 
 # Other files and folders
 .settings/
