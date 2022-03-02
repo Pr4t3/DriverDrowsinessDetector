@@ -1,97 +1,59 @@
 import cv2
-import argparse
 import os
-from PIL import Image
-import matplotlib.pyplot as plt
-from matplotlib import pyplot
-import numpy as np
-
-# vidcap = cv2.VideoCapture('raw_data/1-FemaleNoGlasses.avi')
-
-
-
-# Function to convert RGB Image to GrayScale
-def convertImageToGray(path):
-    image = cv2.imread(path)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    return cv2.imwrite(path, image)
 
 def face_coordinates(path):
-
-    ds_factor = 0.5
+    '''
+    returns the coordinates of a detected face'''
     face = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml')
-    mouth_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_smile.xml')
 
     if face.empty():
         raise IOError('Unable to load the face cascade classifier xml file')
     image = cv2.imread(path)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    face_rects = face.detectMultiScale3(gray, minSize=(90,45), minNeighbors=14, outputRejectLevels=True)
-    print(face_rects, '  this is face recs')
-    return face_rects[0][0]
+    face_rects = face.detectMultiScale(gray,minNeighbors=5,scaleFactor=1.1,minSize=(25,25))
 
-def mouth_coordinates(path):
-
-    ds_factor = 0.5
-
-    mouth_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_smile.xml')
-
-    if mouth_cascade.empty():
-        raise IOError('Unable to load the mouth cascade classifier xml file')
-    image = cv2.imread(path)
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    mouth_rects = mouth_cascade.detectMultiScale3(gray, minSize=(90,45), minNeighbors=14, outputRejectLevels=True)
-
-    return mouth_rects[0][0]
+    return face_rects[0]
 
 def crop_face(path, output):
+    '''
+    returns the cropped image when a face is detected'''
     img = cv2.imread(path)
-    print(face_coordinates(path))
     x,y,w,h = face_coordinates(path)
     crop_img = img[y:y+h, x:x+w]
     cv2.imwrite(output, crop_img)
 
-def crop_mouth(path, output):
-    img = cv2.imread(path)
-    x,y,w,h = mouth_coordinates(path)
-    crop_img = img[y:y+h, x:x+w]
-    cv2.imwrite(output, crop_img)
+
+if __name__ == '__main__':
 
 
+    '''
+    There has to be a directory of raw_data
+    with a dir called dataset_new
+    with train and test dirs
+    with pictures of faces for class yawning ann no_yawning
+    '''
+    start = os.getcwd()
+    dataset_train_yawn_path = start + '/raw_data/dataset_new/train/yawn'
+    dataset_train_no_yawn_path = start + '/raw_data/dataset_new/train/no_yawn'
 
-def getFrame(sec):
-    vidcap.set(cv2.CAP_PROP_POS_MSEC,sec*1000)
-    hasFrames,image = vidcap.read()
-    if hasFrames:
-        return cv2.imwrite("raw_data/cropped_gray/image"+str(count)+".jpg", image)     # save frame as JPG file
-    return hasFrames
-# sec = 0
-# frameRate = 4 #//it will capture image in each 2 second
-# count=1
-# success = getFrame(sec)
-# while success:
-#     count = count + 1
-#     sec = sec + frameRate
-#     sec = round(sec, 2)
-#     success = getFrame(sec)
-var = "/Users/kimfriedel/code/Pr4t3/DriverDrowsinessDetector/raw_data/cropped_gray/image1.jpg"
+    dataset_test_yawn_path = start + '/raw_data/dataset_new/test/yawn'
+    dataset_test_no_yawn_path = start + '/raw_data/dataset_new/test/no_yawn'
 
+    list_of_path = [dataset_train_yawn_path, dataset_train_no_yawn_path, dataset_test_yawn_path, dataset_test_no_yawn_path]
 
-path_departure = '/Users/kimfriedel/code/Pr4t3/DriverDrowsinessDetector/raw_data/cropped_gray/image1.jpg'
-path_arrival = '/Users/kimfriedel/code/Pr4t3/DriverDrowsinessDetector/raw_data/face_cropped/image2.jpg'
-crop_face(path_departure, path_arrival)
+    count = 0
+    for list in list_of_path:
 
-path_final = '/Users/kimfriedel/code/Pr4t3/DriverDrowsinessDetector/raw_data/mouth_cropped/mouth2.jpg'
-crop_mouth(path_arrival, path_final)
+        for (root,dirs,files) in os.walk(list):
 
-# # load and display an image with Matplotlib
-# from matplotlib import image
+            for file in files:
+                path_departure = root+'/'+file
+                path_arrival = path_departure.replace('dataset_new', 'datset_extracted_face')
 
-# # load image as pixel array
-# image = image.imread(var)
-# # summarize shape of the pixel array
-# print(image.dtype)
-# print(image.shape)
-# # display the array of pixels as an image
-# pyplot.imshow(image)
-# pyplot.show()
+                try:
+                    crop_face(path_departure, path_arrival)
+                    count+=1
+                except:
+                    pass
+            print(count, root.split('/')[-1])
+            count = 0
