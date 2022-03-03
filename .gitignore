@@ -9,6 +9,7 @@ notebooks/.ipynb_checkpoints
 # Other files and folders
 .settings/
 .DS_Store
+.vscode
 
 
 # Executables
