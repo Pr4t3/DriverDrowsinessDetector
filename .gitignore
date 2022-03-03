@@ -4,10 +4,12 @@ bin-release/
 [Oo]bj/
 [Bb]in/
 raw_data/
-
+notebooks/.ipynb_checkpoints
 
 # Other files and folders
 .settings/
+.DS_Store
+
 
 # Executables
 *.swf
