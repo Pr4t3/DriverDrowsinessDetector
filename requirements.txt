@@ -28,5 +28,8 @@ joblib
 memoized-property
 termcolor
 
-# opencv
+# libraries
 opencv-python
+pygame
+tensorflow   # maybe delete later on
+keras
