@@ -1,11 +1,12 @@
 #imports
+import imp
 from tensorflow.keras.models import load_model
 import cv2
 import numpy as np
 
 #module import
 from src.modules.Eye import Eye
-
+from src.modules.Tilt import Tilt
 PATH = 'models/model_yawn.h5'
 
 # #TODO  self.drowsy_score = 0
@@ -30,6 +31,8 @@ class Face:
         self.left_eye = self.create_left_eye()
         self.right_eye = self.create_right_eye()
         self.yawn = self.set_yawn()
+        self.tilt = self.set_tilt()
+
 
 
     def face_set_coordinates(self, minNeighbors=5, scaleFactor=1.1, minSize=(25,25)):
@@ -79,7 +82,12 @@ class Face:
         draws a rectangle from the face'''
         cv2.rectangle(self.frame, (self.x,self.y) , (self.x+self.w,self.y+self.h) , color , thickness)
 
-
+    def set_tilt(self):
+        tilt = Tilt(self.frame, 20)
+        if tilt.tilt:
+            return True
+        else:
+            return False
 # closed=0
 # open=1
 
