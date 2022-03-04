@@ -37,13 +37,12 @@ class Face:
         retruns the coordinates of a detected face
         in a gray'''
 
-        print(self.face_classifier, self.gray)
+
         try:
             self.faces = self.face_classifier.detectMultiScale(self.gray,
                                                           minNeighbors=minNeighbors,
                                                               scaleFactor=scaleFactor,
                                                               minSize=minSize)
-            print(self.faces)
             return self.faces[0] #x,y,w,h -> coordinates in frame
         except:
             return [0,0,24,24]
@@ -53,33 +52,31 @@ class Face:
         sets yawn variable based on model's prediction'''
 
         face = cv2.resize(self.face_image,(24,24))
-        print(face.shape)
         face = face/255
-        print(face.shape)
         face= face.reshape(24,24,-1)
-        print(face.shape)
         face = np.expand_dims(face,axis=0)
-        print(face.shape)
         prediction = self.model.predict_classes(face)
-        if prediction[0]:
-            self.yawn = True
+
+        if prediction[0] == 0:
+            return False
         else:
-            self.yawn = False
+            return True
 
     def create_right_eye(self):
         '''
         detects eyes and instanciate eyes classes'''
 
-        return Eye('right', self.face_image)
+        return Eye('right', self.frame)
 
     def create_left_eye(self):
         '''
         detects eyes and instanciate eyes classes'''
 
-        return Eye('left', self.face_image)
+        return Eye('left', self.frame)
 
     def draw_rectangle(self, color=(68,214,44), thickness=5):
-
+        '''
+        draws a rectangle from the face'''
         cv2.rectangle(self.frame, (self.x,self.y) , (self.x+self.w,self.y+self.h) , color , thickness)
 
 
