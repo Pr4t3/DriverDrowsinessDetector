@@ -18,14 +18,15 @@ class Face:
     -- frame: captured frame (webcam image for instance)
     '''
     def __init__(self, frame,
-                 face_classifier=cv2.CascadeClassifier(cv2.data.haarcascades + '\haarcascade_frontalface_alt.xml'),
+                 face_classifier=cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_alt.xml'),
                  ):
-        self.frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        self.frame = frame
+        self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         self.face_classifier = face_classifier
         self.model = load_model(PATH) ## TODO has to be the right model
         self.drowsy = False #TODO rethink
         self.x, self.y, self.w, self.h = self.face_set_coordinates()
-        self.face_image = self.frame[self.y:self.y+self.h,self.x:self.x+self.w]
+        self.face_image = self.gray[self.y:self.y+self.h,self.x:self.x+self.w]
         self.left_eye = self.create_left_eye()
         self.right_eye = self.create_right_eye()
         self.yawn = self.set_yawn()
@@ -34,29 +35,33 @@ class Face:
     def face_set_coordinates(self, minNeighbors=5, scaleFactor=1.1, minSize=(25,25)):
         '''
         retruns the coordinates of a detected face
-        in a frame'''
+        in a gray'''
 
-        print(self.face_classifier, self.frame)
-        # try:
-        self.faces = self.face_classifier.detectMultiScale(self.frame,
+        print(self.face_classifier, self.gray)
+        try:
+            self.faces = self.face_classifier.detectMultiScale(self.gray,
                                                           minNeighbors=minNeighbors,
                                                               scaleFactor=scaleFactor,
                                                               minSize=minSize)
-        #     print(self.faces)
-        #     return self.faces[0] #x,y,w,h -> coordinates in frame
-        # except:
-        #     return [0,0,24,24]
+            print(self.faces)
+            return self.faces[0] #x,y,w,h -> coordinates in frame
+        except:
+            return [0,0,24,24]
 
     def set_yawn(self):
         '''
         sets yawn variable based on model's prediction'''
 
         face = cv2.resize(self.face_image,(24,24))
+        print(face.shape)
         face = face/255
+        print(face.shape)
         face= face.reshape(24,24,-1)
+        print(face.shape)
         face = np.expand_dims(face,axis=0)
-        pred = self.model.predict_classes(self.face_image)
-        if pred:
+        print(face.shape)
+        prediction = self.model.predict_classes(face)
+        if prediction[0]:
             self.yawn = True
         else:
             self.yawn = False
@@ -65,15 +70,15 @@ class Face:
         '''
         detects eyes and instanciate eyes classes'''
 
-        return Eye('right', self.frame)
+        return Eye('right', self.face_image)
 
     def create_left_eye(self):
         '''
         detects eyes and instanciate eyes classes'''
 
-        return Eye('left', self.frame)
+        return Eye('left', self.face_image)
 
-    def draw_rectangle(self, color=(100,100,100), thickness=1):
+    def draw_rectangle(self, color=(68,214,44), thickness=5):
 
         cv2.rectangle(self.frame, (self.x,self.y) , (self.x+self.w,self.y+self.h) , color , thickness)
 
