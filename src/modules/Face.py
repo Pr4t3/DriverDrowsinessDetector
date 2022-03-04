@@ -83,10 +83,12 @@ class Face:
 
     def set_tilt(self):
         tilt = Tilt(self.frame, 20)
-        if tilt.tilt:
-            return True
-        else:
-            return False
+        return tilt.tilt
+#         if tilt.tilt:
+#             return True
+#         else:
+#             return False
+
 # closed=0
 # open=1
 
