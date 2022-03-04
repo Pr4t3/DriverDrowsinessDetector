@@ -32,12 +32,12 @@ while(True):
     for (x,y,w,h) in right_eye:
         r_eye=frame[y:y+h,x:x+w]
         count=count+1
-        r_eye = cv2.cvtColor(r_eye,cv2.COLOR_BGR2GRAY)
-        r_eye = cv2.resize(r_eye,(24,24))
-        r_eye= r_eye/255
-        r_eye= r_eye.reshape(24,24,-1)
-        r_eye = np.expand_dims(r_eye,axis=0)
-        rpred = model.predict_classes(r_eye)
+        # r_eye = cv2.cvtColor(r_eye,cv2.COLOR_BGR2GRAY)
+        # r_eye = cv2.resize(r_eye,(24,24))
+        # r_eye= r_eye/255
+        # r_eye= r_eye.reshape(24,24,-1)
+        # r_eye = np.expand_dims(r_eye,axis=0)
+        # rpred = model.predict_classes(r_eye)
         if(rpred[0]==1):
             lbl='Open'
         if(rpred[0]==0):
