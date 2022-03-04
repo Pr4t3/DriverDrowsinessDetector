@@ -30,6 +30,6 @@ termcolor
 
 # opencv
 opencv-python
-tensorflow
 pygame
+tensorflow   # maybe delete later on
 keras
