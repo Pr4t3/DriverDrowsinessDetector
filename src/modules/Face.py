@@ -82,11 +82,13 @@ class Face:
         cv2.rectangle(self.frame, (self.x,self.y) , (self.x+self.w,self.y+self.h) , color , thickness)
 
     def set_tilt(self):
+        '''
+        evaluates it the face is tilting'''
+
         tilt = Tilt(self.frame, 20)
-        if tilt.tilt:
-            return True
-        else:
-            return False
+        return tilt.tilt
+
+
 # closed=0
 # open=1
 
