@@ -46,7 +46,7 @@ class Tilt:
         arguments:
         -- confidence_threshold:  '''
         y, x, c = self.frame.shape
-        shaped = np.squeeze(np.multiply(self.keypoints, [y,x,1]))
+        shaped = np.squeeze(np.multiply(self.keypoints_with_scores, [y,x,1]))
 
         for edge, color in EDGES.items():
             p1, p2 = edge
@@ -62,7 +62,7 @@ class Tilt:
         arguments:
         -- confidence_threshold:  '''
         y, x, c = self.frame.shape
-        shaped = np.squeeze(np.multiply(self.keypoints, [y,x,1]))
+        shaped = np.squeeze(np.multiply(self.keypoints_with_scores, [y,x,1]))
 
         for kp in shaped:
             ky, kx, kp_conf = kp
