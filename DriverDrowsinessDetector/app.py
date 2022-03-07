@@ -16,6 +16,7 @@ while (True):
 
     open_eye_label = 'Eyes Open'
     yawn_label = 'Not Yawning'
+    tilt_label = 'Not Tilting'
     ret, frame = cap.read() #TODO what is ret
     height, width = frame.shape[:2]
 
@@ -35,6 +36,12 @@ while (True):
         yawn_label = 'Yawning'
 
     cv2.putText(frame, yawn_label, (10,height-40), font, 1,(255,255,255),1,cv2.LINE_AA)
+
+    if face.tilt:
+        tilt_label = 'Tilting'
+
+    cv2.putText(frame, tilt_label, (10,height-60), font, 1,(255,255,255),1,cv2.LINE_AA)
+
 
     cv2.imshow('frame',frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
