@@ -2,6 +2,8 @@
 from tensorflow.keras.models import load_model
 import cv2
 import numpy as np
+from datetime import datetime
+
 
 #module import
 from src.modules.Eye import Eye
@@ -30,7 +32,8 @@ class Face:
         self.left_eye = self.create_left_eye()
         self.right_eye = self.create_right_eye()
         self.yawn = self.set_yawn()
-        self.tilt = self.set_tilt()
+        self.tilt = Tilt(self.frame, 20)
+        # self.is_tilt = self.tilt.set_tilt()
 
 
 
@@ -58,8 +61,9 @@ class Face:
         face= face.reshape(24,24,-1)
         face = np.expand_dims(face,axis=0)
         prediction = self.model.predict_classes(face)
-
-        if prediction[0] == 0:
+        # if prediction[0] == 1:
+        #     print('*************** Yawning', datetime.now())
+        if prediction[0] == 1:
             return False
         else:
             return True
@@ -81,12 +85,11 @@ class Face:
         draws a rectangle from the face'''
         cv2.rectangle(self.frame, (self.x,self.y) , (self.x+self.w,self.y+self.h) , color , thickness)
 
-    def set_tilt(self):
-        '''
-        evaluates it the face is tilting'''
+    # def set_tilt(self):
+    #     '''
+    #     evaluates it the face is tilting'''
 
-        tilt = Tilt(self.frame, 20)
-        return tilt.tilt
+    #     return self.tilt.is_tilt
 
 
 # closed=0
