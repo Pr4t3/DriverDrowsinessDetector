@@ -76,7 +76,7 @@ while (True):
 
 
 
-    print(eye_cache)
+
     print(tilt_cache)
     cv2.imshow('frame',frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
