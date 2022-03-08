@@ -11,7 +11,8 @@ install_requirements:
 # ----------------------------------
 
 streamlit:
-	-@streamlit run DriverDrowsinessDetector/app_streamlit.py
+	#-@streamlit run DriverDrowsinessDetector/streamlitt-app.py
+	-@streamlit run streamlitt-app.py
 
 # heroku_login:
 # 	-@heroku login
@@ -36,4 +37,4 @@ clean:
 	@rm -fr dist
 	@rm -fr *.dist-info
 	@rm -fr *.egg-info
-	-@rm model.joblib
+#-@rm model.joblib
