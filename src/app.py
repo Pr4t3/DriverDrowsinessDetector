@@ -1,5 +1,5 @@
 
-from src.modules.Face import Face
+from modules.face import Face
 
 
 import cv2

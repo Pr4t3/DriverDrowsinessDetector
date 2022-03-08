@@ -1,13 +1,13 @@
-#imports
 from tensorflow.keras.models import load_model
+
 import cv2
 import numpy as np
 from datetime import datetime
 
 
 #module import
-from src.modules.Eye import Eye
-from src.modules.Tilt import Tilt
+from src.modules.eye import Eye
+from src.modules.tilt import Tilt
 PATH = 'models/model_yawn.h5'
 
 # #TODO  self.drowsy_score = 0
