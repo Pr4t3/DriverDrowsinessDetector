@@ -1,6 +1,4 @@
 
-tensorflow==2.6.0
-
 # packaging
 pip>=9
 setuptools>=26
@@ -22,8 +20,8 @@ scikit-learn
 # API
 gcsfs
 google-cloud-storage
-mlflow
-s3fs
+#mlflow
+#s3fs
 
 # utilities
 six>=1.14
@@ -34,7 +32,9 @@ termcolor
 # libraries
 opencv-python
 pygame
-
+#tensorflow==2.6.0
+tensorflow
+kerasy
 
 
 # UI
