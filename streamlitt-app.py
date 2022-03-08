@@ -1,13 +1,13 @@
 import streamlit as st
-from src.modules.face import Face
-
 import cv2
 from pygame import mixer
 
+from src.modules.face import Face
+
+#test_file = 'src/drowsiness-test.mp4'
+
 mixer.init()
 sound = mixer.Sound('src/utils/alarm.wav')
-#test_im = cv2.imread('/Users/kimfriedel/code/Pr4t3/DriverDrowsinessDetector/DriverDrowsinessDetector/1318.jpg')
-
 
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
 cache_len = 10
@@ -24,7 +24,7 @@ yawn_button = st.checkbox("Toggle yawn")
 tilt_button = st.checkbox("Toggle tilt")
 
 FRAME_WINDOW = st.image([])
-cam = cv2.VideoCapture(-1)
+cam = cv2.VideoCapture(0)
 
 while run:
     danger_score = sum(eye_cache) + sum(tilt_cache)
@@ -32,9 +32,7 @@ while run:
     yawn_label = 'Not Yawning'
     tilt_label = 'Not Tilting'
     _, frame = cam.read()
-
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
     height, width = frame.shape[:2]
 
     face = Face(frame)
@@ -95,7 +93,7 @@ while run:
     FRAME_WINDOW.image(frame)
 
     print(tilt_cache)
-    cv2.imshow('frame',frame)
+    #cv2.imshow('frame',frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
