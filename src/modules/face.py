@@ -60,7 +60,11 @@ class Face:
         face = face/255
         face= face.reshape(24,24,-1)
         face = np.expand_dims(face,axis=0)
-        prediction = self.model.predict_classes(face)
+
+        #prediction = self.model.predict_classes(face)
+        prediction_results = self.model.predict(face)
+        prediction = np.argmax(prediction_results, axis=1)
+
         # if prediction[0] == 1:
         #     print('*************** Yawning', datetime.now())
         if prediction[0] == 1:

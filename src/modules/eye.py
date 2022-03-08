@@ -43,8 +43,8 @@ class Eye:
         eye= eye.reshape(24,24,-1)
         eye = np.expand_dims(eye,axis=0)
         #prediction = self.model.predict_classes(eye)
-        prediction = self.model.predict(eye)
-        prediction_class = np.argmax(prediction, axis=1)
+        prediction_results = self.model.predict(eye)
+        prediction = np.argmax(prediction_results, axis=1)
 
         if prediction[0] == 1:
             return True
