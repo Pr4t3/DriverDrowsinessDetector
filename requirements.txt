@@ -9,33 +9,33 @@ wheel>=0.29
 
 # data science
 numpy
-pandas
-scikit-learn
+# pandas
+# scikit-learn
 
 # tests/linter
-black
-coverage
-flake8
-pytest
-yapf
+# black
+# coverage
+# flake8
+# pytest
+# yapf
 
 # API
 gcsfs
 google-cloud-storage
-mlflow
-s3fs
+# mlflow
+# s3fs
 
 # utilities
 six>=1.14
-joblib
-memoized-property
-termcolor
+# joblib
+# memoized-property
+# termcolor
 
 # libraries
 opencv-python
 pygame
    # maybe delete later on
-keras
+# keras
 
 # UI
 streamlit
