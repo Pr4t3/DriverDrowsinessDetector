@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 import os
 from src.utils.edges import EDGES
+from sympy import Point, Segment
 
 PATH = os.getcwd()
 MODEL_PATH = os.path.join(PATH,'models/lite-model_movenet_singlepose_thunder_3.tflite')
@@ -78,5 +79,30 @@ class Tilt:
         left_eye_y = np.array(left_eye[:2]*self.frame.shape[:2]).astype(int)[0]
         right_eye_y = np.array(right_eye[:2]*self.frame.shape[:2]).astype(int)[0]
 
-
+        print('Ycoord left eye', left_eye_y)
         return True if abs(left_eye_y-right_eye_y) > tilt_threshold else False
+
+    def draw_face_axis(self):
+
+        if self.tilt:
+            color = (255, 0, 0)
+        else:
+            color = (0, 255, 0)
+        x_left, y_left = self.keypoints_with_scores[0][0][1][:2]*self.frame.shape[:2]
+
+        x_right, y_right = self.keypoints_with_scores[0][0][2][:2]*self.frame.shape[:2]
+
+        p1, p2 = Point(x_left, y_left), Point(x_right, y_right)
+
+        s1 = Segment(p1, p2)
+        perpendicularBisector = s1.perpendicular_bisector()
+        perp_1, perp_2 = perpendicularBisector.points
+
+        perp_eval_1, perp_eval_2 = ((perp_1.coordinates[0].evalf(), perp_1.coordinates[1].evalf()),
+                                    (perp_2.coordinates[0].evalf(), perp_2.coordinates[1].evalf()))
+
+        print(perp_eval_1)
+        cv2.line(self.frame, perp_eval_1, perp_eval_2, color, 2)
+
+    if __name__ == '__main__':
+        pass

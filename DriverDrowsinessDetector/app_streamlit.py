@@ -45,7 +45,7 @@ while run:
         face.right_eye.draw_rectangle()
 
     if tilt_button:
-        face.tilt.draw_connections(0.4)
+        face.tilt.draw_face_axis()
 
     if not face.left_eye.open and not face.right_eye.open:
         open_eye_label = 'Eyes Closed'
