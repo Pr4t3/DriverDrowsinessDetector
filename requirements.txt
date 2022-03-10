@@ -8,7 +8,7 @@ wheel>=0.29
 # data science
 numpy
 pandas
-scikit-learn
+#scikit-learn
 
 # tests/linter
 # black
@@ -24,17 +24,20 @@ google-cloud-storage
 #s3fs
 
 # utilities
+PyGTK
+playsound
+libgtk2.0-dev
 six>=1.14
 joblib
 memoized-property
 termcolor
+streamlit_webrtc
 
 # libraries
-opencv-python
-pygame
-#tensorflow==2.6.0
+opencv-python-headless
+#pygame
 tensorflow
-kerasy
+#keras
 
 
 # UI

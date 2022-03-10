@@ -7,6 +7,7 @@ from src.modules.face import Face
 from streamlit_webrtc import webrtc_streamer, RTCConfiguration
 
 
+
 class VideoFrameProcessor:
 
     def recv(self, frame):
@@ -16,8 +17,7 @@ class VideoFrameProcessor:
 
         danger_score = sum(eye_cache) + sum(tilt_cache)
 
-        frm = frame.to_np.ndarray(format="bgr24")
-        frame = frm
+        frame = frame.to_np.ndarray(format="bgr24")
         height, width = frame.shape[:2]
 
         face = Face(frame)
@@ -65,19 +65,19 @@ class VideoFrameProcessor:
 
 
         if sum(eye_cache)/cache_len >= 0.8:
-            #sound.play()
+            sound.play()
             cv2.putText(frame, f'ALARM! Score: {danger_score}', (10,height-80), font, 1,(255,0,0),1,cv2.LINE_AA)
 
         if sum(tilt_cache)/cache_len >= 0.8:
-            #sound.play()
+            sound.play()
             cv2.putText(frame, f'ALARM! Score: {danger_score}', (10,height-80), font, 1,(255,0,0),1,cv2.LINE_AA)
 
         cv2.putText(frame, tilt_label, (10,height-60), font, 1,(255,255,255),1,cv2.LINE_AA)
 
         return av.VideoFrame.from_ndarray(frame, format='bgr24')
 
-#mixer.init()
-#sound = mixer.Sound('src/utils/alarm.wav')
+mixer.init()
+sound = mixer.Sound('src/utils/alarm.wav')
 
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
 cache_len = 10

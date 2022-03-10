@@ -11,7 +11,7 @@ install_requirements:
 # ----------------------------------
 
 streamlit:
-	#-@streamlit run DriverDrowsinessDetector/streamlitt-app.py
+	#-@streamlit run streamlitt-app.py
 	-@streamlit run streamlitt-app.py
 
 # heroku_login:
