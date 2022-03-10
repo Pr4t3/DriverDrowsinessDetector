@@ -7,7 +7,7 @@ from src.utils.edges import EDGES
 from sympy import Point, Segment
 
 PATH = os.getcwd()
-MODEL_PATH = os.path.join(PATH,'models/lite-model_movenet_singlepose_thunder_3.tflite')
+MODEL_PATH = os.path.join(PATH,'DriverDrowsinessDetector/models/lite-model_movenet_singlepose_thunder_3.tflite')
 
 
 class Tilt:
@@ -63,9 +63,9 @@ class Tilt:
         arguments:
         -- confidence_threshold:  '''
         y, x, c = self.frame.shape
-        shaped = np.squeeze(np.multiply(self.keypoints_with_scores, [y,x,1]))
+        self.shaped = np.squeeze(np.multiply(self.keypoints_with_scores, [y,x,1]))
 
-        for kp in shaped:
+        for kp in self.shaped[:2]:
             ky, kx, kp_conf = kp
             if kp_conf > confidence_threshold:
                 cv2.circle(self.frame, (int(kx), int(ky)), 4, (0,255,0), -1)
@@ -76,13 +76,23 @@ class Tilt:
         left_eye = self.keypoints_with_scores[0][0][1]
         right_eye = self.keypoints_with_scores[0][0][2]
 
-        left_eye_y = np.array(left_eye[:2]*self.frame.shape[:2]).astype(int)[0]
-        right_eye_y = np.array(right_eye[:2]*self.frame.shape[:2]).astype(int)[0]
+        self.left_eye_y = np.array(left_eye[:2]*self.frame.shape[:2]).astype(int)[0]
+        self.right_eye_y = np.array(right_eye[:2]*self.frame.shape[:2]).astype(int)[0]
 
-        print('Ycoord left eye', left_eye_y)
-        return True if abs(left_eye_y-right_eye_y) > tilt_threshold else False
+        print('Ycoord left eye',)
+        return True if abs(self.left_eye_y-self.right_eye_y) > tilt_threshold else False
+
+    def draw_half_circle(self):
+
+        cv2.ellipse(self.frame, (40, 40), (30,30),
+            0, 180, 360, (255,255,0), 3)
 
     def draw_face_axis(self):
+
+        y, x, c = self.frame.shape
+        shaped = np.squeeze(np.multiply(self.keypoints_with_scores, [y,x,1]))
+        nose_y, nose_x, kp_conf = shaped[0]
+
 
         if self.tilt:
             color = (255, 0, 0)
@@ -91,6 +101,9 @@ class Tilt:
         x_left, y_left = self.keypoints_with_scores[0][0][1][:2]*self.frame.shape[:2]
 
         x_right, y_right = self.keypoints_with_scores[0][0][2][:2]*self.frame.shape[:2]
+
+        midpoint_y = int((y_left + y_right) / 2)
+        midpoint_x = int((x_left + x_right) / 2)
 
         p1, p2 = Point(x_left, y_left), Point(x_right, y_right)
 
@@ -101,8 +114,15 @@ class Tilt:
         perp_eval_1, perp_eval_2 = ((perp_1.coordinates[0].evalf(), perp_1.coordinates[1].evalf()),
                                     (perp_2.coordinates[0].evalf(), perp_2.coordinates[1].evalf()))
 
-        print(perp_eval_1)
-        cv2.line(self.frame, perp_eval_1, perp_eval_2, color, 2)
+        ydiff = self.left_eye_y-self.right_eye_y
+        theta = (ydiff + 30) * 3
+
+        Y = 40 + (30 * np.cos(theta))
+        X = 40 + (30 * np.sin(theta))
+        print(theta)
+        self.draw_half_circle()
+        cv2.line(self.frame, (40, 40), (int(X),int(Y)), color, 2)
+        #cv2.line(self.frame, (int(nose_x), int(nose_y)), (midpoint_x, midpoint_y), color, 2)
 
     if __name__ == '__main__':
         pass

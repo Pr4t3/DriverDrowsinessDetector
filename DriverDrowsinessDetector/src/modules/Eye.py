@@ -3,7 +3,7 @@ from tensorflow.keras.models import load_model
 import cv2
 import numpy as np
 
-PATH_EYE_MODEL = 'models/model_eyes.h5'
+PATH_EYE_MODEL = 'DriverDrowsinessDetector/models/model_eyes.h5'
 
 class Eye:
 
