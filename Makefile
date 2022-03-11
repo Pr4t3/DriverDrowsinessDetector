@@ -11,8 +11,8 @@ install_requirements:
 # ----------------------------------
 
 streamlit:
-	#-@streamlit run streamlitt-app.py
-	-@streamlit run streamlitt-app.py
+	#-@streamlit run streamlit_app.py
+	-@streamlit run streamlit_app.py
 
 # heroku_login:
 # 	-@heroku login

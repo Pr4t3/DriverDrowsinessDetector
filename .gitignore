@@ -10,7 +10,8 @@ notebooks/.ipynb_checkpoints
 .settings/
 .DS_Store
 .vscode
-gcp/  
+gcp/
+test.py
 
 
 # Executables
