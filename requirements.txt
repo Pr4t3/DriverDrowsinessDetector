@@ -2,12 +2,12 @@
 # packaging
 pip>=9
 setuptools>=26
-twine
+#twine
 wheel>=0.29
 
 # data science
 numpy
-pandas
+#pandas
 #scikit-learn
 
 # tests/linter
@@ -24,18 +24,15 @@ google-cloud-storage
 #s3fs
 
 # utilities
-PyGTK
-playsound
-libgtk2.0-dev
-six>=1.14
-joblib
-memoized-property
-termcolor
+pygame
+# six>=1.14
+# joblib
+# memoized-property
+# termcolor
 streamlit_webrtc
 
 # libraries
 opencv-python-headless
-#pygame
 tensorflow
 #keras
 

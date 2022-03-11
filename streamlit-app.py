@@ -15,9 +15,8 @@ class VideoFrameProcessor:
         tilt_label = 'Not Tilting'
 
         danger_score = sum(eye_cache) + sum(tilt_cache)
+        frame = frame.to_ndarray(format="bgr24")
 
-        frm = frame.to_np.ndarray(format="bgr24")
-        frame = frm
         height, width = frame.shape[:2]
 
         face = Face(frame)
@@ -73,8 +72,11 @@ class VideoFrameProcessor:
             cv2.putText(frame, f'ALARM! Score: {danger_score}', (10,height-80), font, 1,(255,0,0),1,cv2.LINE_AA)
 
         cv2.putText(frame, tilt_label, (10,height-60), font, 1,(255,255,255),1,cv2.LINE_AA)
+        new_frame =av.VideoFrame.from_ndarray(frame, format='bgr24')
 
-        return av.VideoFrame.from_ndarray(frame, format='bgr24')
+        new_frame =  av.VideoFrame.from_ndarray(frame, format='bgr24')
+        print("kurz vor return", type(new_frame))
+        return new_frame
 
 #mixer.init()
 #sound = mixer.Sound('src/utils/alarm.wav')
