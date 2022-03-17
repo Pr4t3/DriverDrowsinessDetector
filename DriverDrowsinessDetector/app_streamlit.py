@@ -22,6 +22,7 @@ try:
     sound = mixer.Sound('DriverDrowsinessDetector/src/utils/alarm.wav')
 except:
     print('no mixer')
+    sound = None
 
 
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
@@ -56,11 +57,7 @@ def main():
 
 def app_object_detection():
 
-    CLASSES = [
-        "tilting",
-        "yawning",
-        "eyes"
-    ]
+
     eye_button = st.checkbox("Show eye Detection")
     yawn_button = st.checkbox("Show face Detection")
     tilt_button = st.checkbox("Show tilt Detection")
@@ -71,7 +68,7 @@ def app_object_detection():
         "Alert Threshold", 0.0, 1.0, DEFAULT_CONFIDENCE_THRESHOLD, 0.05
     )
 
-    COLORS = np.random.uniform(0, 255, size=(len(CLASSES), 3))
+
 
 
 
@@ -103,8 +100,9 @@ def app_object_detection():
 
             if tilt_button:
                 face.tilt.draw_face_axis()
-                #face.tilt.draw_keypoints(0.4)
 
+
+            # filling the eyes quene
             if not face.left_eye.open and not face.right_eye.open:
                 open_eye_label = 'Eyes Closed'
                 del eye_cache[0]
@@ -113,12 +111,15 @@ def app_object_detection():
                 del eye_cache[0]
                 eye_cache.append(0)
 
-
-            cv2.putText(frame, open_eye_label, (10,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
+            cv2.putText(frame, open_eye_label, (10,height-20), font, 1.51,(255,255,255),1,cv2.LINE_AA)
+            cv2.putText(frame, open_eye_label, (10,height-20), font, 1.5,(255,255,255),1,cv2.LINE_AA)
 
             # Enabling yawn detection
+            #make the font more bolt
+            cv2.putText(frame, yawn_label, (10,height-50), font, 1.51,(255,255,255),1,cv2.LINE_AA)
+            cv2.putText(frame, yawn_label, (10,height-50), font, 1.5,(255,255,255),1,cv2.LINE_AA)
 
-            cv2.putText(frame, yawn_label, (10,height-40), font, 1,(255,255,255),1,cv2.LINE_AA)
+            #filling the yawn quene
             if face.yawn:
                 yawn_label = 'Yawning'
                 del yawn_cache[0]
@@ -129,7 +130,7 @@ def app_object_detection():
 
 
 
-
+            # filling the yawn quene
             if face.tilt.tilt:
                 tilt_label = 'Tilting'
                 del tilt_cache[0]
@@ -139,16 +140,24 @@ def app_object_detection():
                 tilt_cache.append(0)
 
 
+
+            # triggering alarm
             if sum(eye_cache)/cache_len >= confidence_threshold:
-                sound.play()
-                cv2.putText(frame, f'ALARM! Score: {DANGER_SCORE}', (10,height-80), font, 1,(255,0,0),1,cv2.LINE_AA)
+                if sound:
+                    sound.play()
+                cv2.putText(frame, f'ALARM! Score: {DANGER_SCORE}', (10,height-120), font, 1,(0,0,255),1,cv2.LINE_AA)
 
             if sum(tilt_cache)/cache_len >= confidence_threshold:
-                sound.play()
-                cv2.putText(frame, f'ALARM! Score: {DANGER_SCORE}', (10,height-80), font, 1,(255,0,0),1,cv2.LINE_AA)
+                if sound:
+                    sound.play()
+                cv2.putText(frame, f'ALARM! Score: {DANGER_SCORE}', (10,height-120), font, 1,(0,0,255),1,cv2.LINE_AA)
 
-            cv2.putText(frame, tilt_label, (10,height-60), font, 1,(255,255,255),1,cv2.LINE_AA)
 
+            #make the font more bolt
+            cv2.putText(frame, tilt_label, (10,height-80), font, 1.51,(255,255,255),1,cv2.LINE_AA)
+            cv2.putText(frame, tilt_label, (10,height-80), font, 1.5,(255,255,255),1,cv2.LINE_AA)
+
+            # bar color according to Danger score - red is dangerous, green if not
             if DANGER_SCORE >= 8:
                 bar_color = (0, 0, 255)
             elif DANGER_SCORE >= 5:
@@ -156,18 +165,24 @@ def app_object_detection():
             else:
                 bar_color = (0, 255, 0)
 
-            cv2.line(frame, (180,height-20), (200+(DANGER_SCORE*10),height-20), bar_color, 4, cv2.LINE_AA)
+
+            # Detection Bar
+            cv2.rectangle(frame, (300,height-15), (450 + (DANGER_SCORE*10), height-35), bar_color, -1)
+            cv2.putText(frame, 'Drowsiness', (310,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
 
             return frame
 
         def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
+            '''
+            webrtc receiving function
+            returns the image displayed'''
             image = frame.to_ndarray(format="bgr24")
 
             annotated_image = self._annotate_image(image)
 
             return av.VideoFrame.from_ndarray(annotated_image, format="bgr24")
 
-    webrtc_ctx = webrtc_streamer(
+    webrtc_streamer(
         key="object-detection",
         mode=WebRtcMode.SENDRECV,
         rtc_configuration=RTC_CONFIGURATION,
@@ -176,40 +191,7 @@ def app_object_detection():
         async_processing=True
     )
 
-    # while True:
-    #             if webrtc_ctx.video_transformer:
-    #                 result = webrtc_ctx.video_transformer.result_queue.get()
-    #                 labels_placeholder.table(result)
-    #             else:
-    #                 break
-    # if webrtc_ctx.video_processor:
-    #     webrtc_ctx.video_processor.confidence_threshold = confidence_threshold
 
-    # if st.checkbox("Show the detected labels", value=True):
-    #     if webrtc_ctx.state.playing:
-    #         labels_placeholder = st.empty()
-    #         # NOTE: The video transformation with object detection and
-    #         # this loop displaying the result labels are running
-    #         # in different threads asynchronously.
-    #         # Then the rendered video frames and the labels displayed here
-    #         # are not strictly synchronized.
-    #         while True:
-    #             if webrtc_ctx.video_processor:
-    #                 try:
-    #                     result = webrtc_ctx.video_processor.result_queue.get(
-    #                         timeout=1.0
-    #                     )
-    #                 except :
-    #                     result = None
-    #                 labels_placeholder.table(result)
-    #             else:
-    #                 break
-
-    # st.markdown(
-    #     "This demo uses a model and code from "
-    #     "https://github.com/robmarkcole/object-detection-app. "
-    #     "Many thanks to the project."
-    # )
 
 if __name__ == '__main__':
     main()
