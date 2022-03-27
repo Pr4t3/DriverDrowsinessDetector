@@ -8,7 +8,7 @@ from datetime import datetime
 #module import
 from src.modules.Eye import Eye
 from src.modules.Tilt import Tilt
-PATH = 'models/model_yawn.h5'
+PATH = 'DriverDrowsinessDetector/models/model_yawn.h5'
 
 # #TODO  self.drowsy_score = 0
 #         self.yawn_score = 0
@@ -26,16 +26,12 @@ class Face:
         self.gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
         self.face_classifier = face_classifier
         self.model = load_model(PATH) ## TODO has to be the right model
-        self.drowsy = False #TODO rethink
         self.x, self.y, self.w, self.h = self.face_set_coordinates()
-        self.face_image = self.gray[self.y:self.y+self.h,self.x:self.x+self.w]
+        self.face_image = self.gray[self.y:self.y+int(self.h*1.2),self.x:self.x+self.w]
         self.left_eye = self.create_left_eye()
         self.right_eye = self.create_right_eye()
         self.yawn = self.set_yawn()
         self.tilt = Tilt(self.frame, 20)
-        # self.is_tilt = self.tilt.set_tilt()
-
-
 
     def face_set_coordinates(self, minNeighbors=5, scaleFactor=1.1, minSize=(25,25)):
         '''
